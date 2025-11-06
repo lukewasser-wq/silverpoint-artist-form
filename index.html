@@ -319,19 +319,34 @@
     </div>
 
     <script>
-        // Get URL parameters
+        // Get URL parameters with better decoding
         function getUrlParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param) || 'N/A';
+            const value = urlParams.get(param);
+            if (!value || value === 'null' || value === 'undefined') {
+                return 'N/A';
+            }
+            // Decode and clean up the value
+            try {
+                return decodeURIComponent(value).replace(/\[.*?\]/g, '').trim();
+            } catch (e) {
+                return value;
+            }
         }
         
         // Load client info from URL
         function loadClientInfo() {
+            console.log('Full URL:', window.location.href);
             document.getElementById('clientName').textContent = getUrlParam('name');
             document.getElementById('artist').textContent = getUrlParam('artist');
             document.getElementById('date').textContent = getUrlParam('date');
             document.getElementById('service').textContent = getUrlParam('service');
             document.getElementById('placement').textContent = getUrlParam('placement');
+            
+            // Log values for debugging
+            console.log('Client Name:', getUrlParam('name'));
+            console.log('Artist:', getUrlParam('artist'));
+            console.log('Date:', getUrlParam('date'));
         }
         
         // Format currency input
